@@ -2,9 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 
-public class Card : MonoBehaviour
+public class CardView : MonoBehaviour
 {
-
 
     [SerializeField] RectTransform cardContainer;
 
