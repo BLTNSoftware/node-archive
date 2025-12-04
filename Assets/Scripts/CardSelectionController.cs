@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 /// <summary>
-/// Handles gameplay logic for card selection and matching.
+/// Gameplay logic for card selection and matching.
 /// </summary>
 public class CardSelectionController : MonoBehaviour
 {
@@ -52,7 +52,8 @@ public class CardSelectionController : MonoBehaviour
 
     public void SubscribeToCards()
     {
-        //UnsubscribeFromCards(); // safety
+        // todo: safety!!! buggy for now, I know the reason, no time to fix!
+        //UnsubscribeFromCards(); 
 
         for (int i = 0; i < boardManager.Cards.Count; i++)
         {
@@ -95,8 +96,7 @@ public class CardSelectionController : MonoBehaviour
             }
         }
 
-        // If there are already 2+ face-up cards when we load,
-        // this will schedule comparisons as usual.
+        // If there are already face up cards when we load, this will schedule comparisons as usual.
         StartNextComparison();
     }
 
@@ -164,16 +164,15 @@ public class CardSelectionController : MonoBehaviour
             if (second == null)
                 return;
 
-            // At this point we have two valid cards; Let's compare them
+            // At this point we have two balid cardss; Let's compare them
             StartCoroutine(ComparePairRoutine(first, second));
 
-            // and now let's loop again to see if there are more pairs we can schedule for comparison.
+            // nowm, loop again to see if there are more pairs we can schedule for comparison.
         }
     }
 
     /// <summary>
-    /// Coroutine that waits briefly, then resolves match/mismatch
-    /// for the given pair of cards.
+    /// Coroutine that waits briefly, then resolves match/mismatch, for the given pair of cards.
     /// </summary>
     private IEnumerator ComparePairRoutine(CardView first, CardView second)
     {

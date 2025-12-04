@@ -108,7 +108,7 @@ public class GameManager : MonoBehaviour
             BoardConfig config = FindBoardConfigById(saveData.boardConfigId);
             if (config == null)
             {
-                Debug.LogWarning($"[GameManager] Saved boardConfigId '{saveData.boardConfigId}' not found. Using default.");
+                Debug.LogWarning($"{gameObject.name}: Saved boardConfigId '{saveData.boardConfigId}' not found. Using default.");
                 config = defaultBoardConfig;
             }
 
@@ -127,16 +127,14 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log($"{gameObject.name}: Saved game is already completed. Starting a fresh game.");
 
-                // Clear save so we don't keep loading a finished game
                 PlayerPrefs.DeleteKey(SaveKey);
                 PlayerPrefs.Save();
 
-                // Start a fresh game with the same config (or default)
                 boardManager.GenerateBoard(config, null);
                 cardSelectionController.UnsubscribeFromCards();
                 cardSelectionController.SubscribeToCards();
 
-                return false; // treat as NEW game (so preview can run)
+                return false; // treat as NEW game, so preview can run!
             }
 
             return true; // valid loaded game
@@ -152,9 +150,6 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
-
-        // Start preview routine if you have it
-        //StartCoroutine(PreviewSequence());
     }
 
     private bool IsBoardComplete()
@@ -185,11 +180,6 @@ public class GameManager : MonoBehaviour
             if (cfg != null && cfg.id == id)
                 return cfg;
         }
-        //foreach (var cfg in allBoardConfigs)
-        //{
-        //    if (cfg != null && cfg.id == id)
-        //        return cfg;
-        //}
         return null;
     }
 

@@ -31,14 +31,6 @@ public class BoardManager : MonoBehaviour
     }
 
 
-    private void Start()
-    {
-        //if (currentConfig != null)
-        //    GenerateBoard(currentConfig);
-        //else
-        //    Debug.LogWarning($"{gameObject.name}: No BoardConfig assigned.");
-    }
-
     /// <summary>
     /// Public entry point to build a new board from a ScriptableObject config.
     /// </summary>
@@ -95,13 +87,12 @@ public class BoardManager : MonoBehaviour
 
             if (cardInfo.isMatched)
             {
-                card.SetMatched();
+                card.SetMatched(false);
             }
             else if (cardInfo.isFaceUp)
             {
                 card.SetToFaceUpImmediate();
             }
-            // else stays face down by Init()
 
             _cards.Add(card);
         }
@@ -119,21 +110,6 @@ public class BoardManager : MonoBehaviour
             Transform child = gridLayoutGroup.transform.GetChild(0);
             DestroyImmediate(child.gameObject);
         }
-
-//            for (int i = gridLayoutGroup.transform.childCount - 1; i >= 0; i--)
-//        {
-//            Transform child = gridLayoutGroup.transform.GetChild(i);
-
-//#if UNITY_EDITOR
-//            if (Application.isPlaying)
-//                Destroy(child.gameObject);
-//            else
-//                DestroyImmediate(child.gameObject);
-//#else
-//            Destroy(child.gameObject);
-//#endif
-//        }
-
 
     }
 
@@ -237,19 +213,11 @@ public class BoardManager : MonoBehaviour
             ids.Add(id);
         }
 
-        //for (int i = ids.Count - 1; i > 0; i--)
-        //{
-        //    int j = Random.Range(0, i + 1);
-        //    int temp = ids[i];
-        //    ids[i] = ids[j];
-        //    ids[j] = temp;
-        //}
-
         return ids;
     }
 
     /// <summary>
-    /// Shuffles the contents of a list in-place using the Fisher–Yates algorithm.
+    /// Shuffles the contents of a list in-place using the Fisher–Yates algorithm!!, first time to hear this name :)
     /// </summary>
     /// <param name="list"></param>
     private void Shuffle(List<int> list)

@@ -35,16 +35,11 @@ public class TextValueAnimator : MonoBehaviour
                        scoreText.text = Mathf.RoundToInt(startValue).ToString();
                    },
                    endValue,
-                   AnimationTime).OnComplete(() => 
+                   AnimationTime).OnComplete(() =>
                    {
-                       scoreText.text = endValue.ToString(); //just making sure bro!
+                       scoreText.text = endValue.ToString(); //just making sure brah!
                    });
 
-//        scoreText.rectTransform.DOPunchScale(
-//Vector3.one * 0.25f,
-//0.25f,
-//10,
-//0.6f);
 
         Color color = Color.green;
         if (endValue < startValue)

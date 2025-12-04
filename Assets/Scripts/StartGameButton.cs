@@ -11,5 +11,4 @@ public class StartGameButton : MonoBehaviour
         UIManager.Instance.ShowGameOverScreen();
     }
 
-
 }

@@ -50,22 +50,6 @@ public class CardView : MonoBehaviour
     private Tween flipTween;
     private bool inPreviewMode = false;
 
-    //private void Reset()
-    //{
-    //    // Auto-assign if dropped on the prefab
-    //    if (cardContainer == null)
-    //        cardContainer = GetComponent<RectTransform>();
-    //}
-
-    private void Start()
-    {
-        // Ensure we start face-down in case Init wasn't called yet
-        //SetToFaceDownImmediate();
-        //IsMatched = false;
-        //IsAnimating = false;
-    }
-
-
 
     /// <summary>
     /// Called by BoardManager after instantiation to assign the logical ID.
@@ -159,16 +143,24 @@ public class CardView : MonoBehaviour
         inPreviewMode = false;
     }
 
-    public void SetMatched()
+    public void SetMatched(bool animate = true)
     {
         IsMatched = true;
         IsFaceUp = true;
         SetToFaceUpImmediate();
 
-        // Feedback punch effect when card is matched.
-        cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity).OnComplete(() => {
+        if (animate)
+        {
+
+            // Feedback punch effect when card is matched.
+            cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity).OnComplete(() => {
+                cardContainer.gameObject.SetActive(false);
+            });
+        }
+        else
+        {
             cardContainer.gameObject.SetActive(false);
-        });
+        }
     }
 
     public void SetToFaceDownImmediate()

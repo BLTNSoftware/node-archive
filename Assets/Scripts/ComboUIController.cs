@@ -15,11 +15,7 @@ public class ComboUIController : MonoBehaviour
 
             return;
         }
-        comboText.rectTransform.DOPunchScale(
-Vector3.one * 0.25f,
-0.25f,
-10,
-0.6f);
+        comboText.rectTransform.DOPunchScale(Vector3.one * 0.25f, 0.25f, 10, 0.6f);
 
         comboText.DOColor(Color.yellow, 0.1f).OnComplete(() =>
         {
