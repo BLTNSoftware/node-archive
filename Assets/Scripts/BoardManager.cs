@@ -30,6 +30,7 @@ public class BoardManager : MonoBehaviour
         Instance = this;       
     }
 
+
     private void Start()
     {
         //if (currentConfig != null)
@@ -261,6 +262,14 @@ public class BoardManager : MonoBehaviour
             int temp = list[i];
             list[i] = list[j];
             list[j] = temp;
+        }
+    }
+
+    internal void SetCheatMode(bool cheatMode)
+    {
+        for (int i = 0; i < _cards.Count; i++)
+        {
+            _cards[i].ShowDebugMode(cheatMode);
         }
     }
 }

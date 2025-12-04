@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private BoardConfig defaultBoardConfig;
     [SerializeField] private BoardConfig[] allBoardConfigs;
 
+    public bool CheatMode = false;
+
     private const string SaveKey = "CARD_MATCH_SAVE";
     public static GameManager Instance { get; internal set; }
 
@@ -27,6 +29,13 @@ public class GameManager : MonoBehaviour
         {
             StartCoroutine(PreviewSequence());
         }
+    }
+
+    public void SwitchCheatMode()
+    {
+        CheatMode = !CheatMode;
+
+        BoardManager.Instance.SetCheatMode(CheatMode);
     }
 
     private void OnEnable()
@@ -55,6 +64,7 @@ public class GameManager : MonoBehaviour
     public void StartNewGame(BoardConfig config)
     {
         ClearSavedGame();
+        CheatMode = false;
 
         boardManager.GenerateBoard(config, null);
         cardSelectionController.UnsubscribeFromCards();
@@ -231,6 +241,7 @@ public class GameManager : MonoBehaviour
     {
         UIManager.Instance.ShowGameOverScreen();
         AudioManager.Instance.PlayGameOver();
+        ScoreSystem.Instance.OnGameComplete();
     }
 
     internal void RestartGame()

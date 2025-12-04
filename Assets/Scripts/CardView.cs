@@ -3,6 +3,7 @@ using DG.Tweening;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 public class CardView : MonoBehaviour
 {
@@ -184,5 +185,11 @@ public class CardView : MonoBehaviour
             IsFaceUp = true;
         }
         cardContainer.localRotation = Quaternion.Euler(0f, FaceUpY, 0f); 
+    }
+
+    [SerializeField] GameObject debugModeOverlay;
+    internal void ShowDebugMode(bool cheatMode)
+    {
+        debugModeOverlay.SetActive(cheatMode);
     }
 }

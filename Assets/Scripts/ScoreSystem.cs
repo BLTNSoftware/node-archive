@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -56,5 +57,11 @@ public class ScoreSystem : MonoBehaviour
         if (score < 0) score = 0;
 
         OnScoreChanged?.Invoke(score, combo);
+    }
+
+    internal void OnGameComplete()
+    {
+        score = 0;
+        combo = 0;
     }
 }
