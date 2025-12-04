@@ -119,6 +119,14 @@ public class BoardManager : MonoBehaviour
         gridLayoutGroup.constraintCount = columns;
     }
 
+    public void RecalculateLayout()
+    {
+        if (currentConfig == null || gridLayoutGroup == null)
+            return;
+
+        ConfigureGrid(currentConfig.rows, currentConfig.columns);
+    }
+
     /// <summary>
     /// Instantiates cards and assigns pair IDs.
     /// </summary>

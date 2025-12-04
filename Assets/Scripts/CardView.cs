@@ -80,7 +80,7 @@ public class CardView : MonoBehaviour
         
     }
 
-    public void FlipUp()
+    public void FlipUp(bool callback = true)
     {
         if (IsAnimating || IsMatched || IsFaceUp)
             return;
@@ -95,7 +95,10 @@ public class CardView : MonoBehaviour
             .OnComplete(() =>
             {
                 IsAnimating = false;
-                OnCardFlippedUp?.Invoke(this);
+                if (callback)
+                {
+                    OnCardFlippedUp?.Invoke(this);
+                }
                 //Debug.Log($"Card {cardId} flipped up.");
             });
     }
@@ -127,9 +130,14 @@ public class CardView : MonoBehaviour
         cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity);
     }
 
-    private void SetToFaceDownImmediate()
+    public void SetToFaceDownImmediate()
     {
         IsFaceUp = false;
         cardContainer.localRotation = Quaternion.Euler(0f, FaceDownY, 0f);
+    }
+    public void SetToFaceUpImmediate()
+    {
+        IsFaceUp = true;
+        cardContainer.localRotation = Quaternion.Euler(0f, FaceUpY, 0f);
     }
 }

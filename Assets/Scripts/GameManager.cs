@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private BoardManager boardManager;
     [SerializeField] private CardSelectionController selectionController;
+    [SerializeField] private float previewDuration = 5f;
 
     public static GameManager Instance { get; internal set; }
 
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         selectionController.OnAllPairsMatched.AddListener(HandleAllPairsMatched);
+        StartCoroutine(PreviewSequence());
     }
 
     private void HandleAllPairsMatched()
@@ -27,14 +29,44 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.ShowGameOverScreen();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     internal void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+
+
+
+    private IEnumerator PreviewSequence()
+    { 
+        // wait a few frames to ensure everything is initialized
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
+
+        //todo: Do we really need to enable/disable the selection controller?
+        //selectionController.enabled = false;
+
+        for (int i = 0; i < boardManager.Cards.Count; i++)
+        {
+            var card = boardManager.Cards[i];
+            if (card != null)
+                card.FlipUp(false);
+        }
+
+        // Wait for preview time
+        yield return new WaitForSeconds(previewDuration);
+
+        for (int i = 0; i < boardManager.Cards.Count; i++)
+        {
+            var card = boardManager.Cards[i];
+            if (card != null)
+                card.FlipDown();
+        }
+
+        //todo: Do we really need to enable/disable the selection controller?
+        //selectionController.enabled = true;
+    }
+
 }
+
