@@ -59,15 +59,24 @@ public class GameManager : MonoBehaviour
         boardManager.GenerateBoard(config, null);
         cardSelectionController.UnsubscribeFromCards();
         cardSelectionController.SubscribeToCards();
+        ScoreSystem.Instance.ResetScore();
         StartCoroutine(PreviewSequence());
 
         UIManager.Instance.HideGameOverScreen();
     }
 
 
-    private void HandlePairResolved(CardView a, CardView b, bool isMatch)
+    private void HandlePairResolved(CardView cardA, CardView cardB, bool isMatch)
     {
-        // Later: scoring logic goes here.
+        if (isMatch)
+        {
+            ScoreSystem.Instance.OnMatch();
+        }
+        else
+        {
+            ScoreSystem.Instance.OnMismatch();
+        }
+
         SaveGame();
     }
     // Start is called before the first frame update
@@ -99,6 +108,8 @@ public class GameManager : MonoBehaviour
 
             cardSelectionController.InitializePendingFromBoardState();
 
+            ScoreSystem.Instance.SetFromSave(saveData.score, saveData.combo);
+
             // Check if this saved game is already completed
             if (IsBoardComplete())
             {
@@ -123,6 +134,8 @@ public class GameManager : MonoBehaviour
             boardManager.GenerateBoard(defaultBoardConfig, null);
             cardSelectionController.UnsubscribeFromCards();
             cardSelectionController.SubscribeToCards();
+
+            ScoreSystem.Instance.ResetScore();
 
             return false;
         }
@@ -201,6 +214,9 @@ public class GameManager : MonoBehaviour
                 isFaceUp = card.IsFaceUp
             };
         }
+
+        data.score = ScoreSystem.Instance.score;
+        data.combo = ScoreSystem.Instance.Combo;
 
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString(SaveKey, json);

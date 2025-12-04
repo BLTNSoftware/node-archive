@@ -21,9 +21,13 @@ public class TextValueAnimator : MonoBehaviour
         AnimateFromToValue(0, 100);
     }
 
-    void AnimateFromToValue(int startValue, int endValue)
+    public void AnimateFromToValue(int startValue, int endValue)
     {
-        
+        if (endValue < 1)
+        {
+            scoreText.text = "0"; // no animation needed
+            return;
+        }
         DOTween.To(() => startValue,
                    x =>
                    {
@@ -35,6 +39,22 @@ public class TextValueAnimator : MonoBehaviour
                    {
                        scoreText.text = endValue.ToString(); //just making sure bro!
                    });
+
+//        scoreText.rectTransform.DOPunchScale(
+//Vector3.one * 0.25f,
+//0.25f,
+//10,
+//0.6f);
+
+        Color color = Color.green;
+        if (endValue < startValue)
+        {
+            color = Color.red;
+        }
+        scoreText.DOColor(color, 0.1f).OnComplete(() =>
+        {
+            scoreText.DOColor(Color.white, 0.3f);
+        });
     }
 
 }

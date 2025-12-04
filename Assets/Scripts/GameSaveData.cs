@@ -17,4 +17,7 @@ public class GameSaveData
     public int columns;
 
     public CardSaveData[] cards;
+
+    public int score;
+    public int combo;
 }
