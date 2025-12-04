@@ -447,6 +447,8 @@ MonoBehaviour:
   OnCardFlippedUp:
     m_PersistentCalls:
       m_Calls: []
+  frontMaterial: {fileID: 2100000, guid: 3ba1bcfebf866fa4baa06c3dc43c0f82, type: 2}
+  frontImage: {fileID: 8959552231058094553}
 --- !u!114 &8011268356141490529
 MonoBehaviour:
   m_ObjectHideFlags: 0

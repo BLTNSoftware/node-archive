@@ -24,7 +24,7 @@ public class BoardManager : MonoBehaviour
 
     public IReadOnlyList<CardView> Cards => _cards;
     public BoardConfig Config => currentConfig;
-
+    [SerializeField] private CardTheme cardTheme;
     private void Awake()
     {
         Instance = this;       
@@ -86,7 +86,11 @@ public class BoardManager : MonoBehaviour
             CardView card = Instantiate(cardPrefab, gridLayoutGroup.transform);
             card.transform.localScale = Vector3.one;
 
-            card.Init(cardInfo.cardId);
+            Texture face = (cardInfo.cardId >= 0 && cardInfo.cardId < cardTheme.faceSprites.Length)
+            ? cardTheme.faceSprites[cardInfo.cardId]
+            : null;
+
+            card.Init(cardInfo.cardId, face);
 
             if (cardInfo.isMatched)
             {
@@ -203,7 +207,11 @@ public class BoardManager : MonoBehaviour
             card.transform.localScale = Vector3.one;
 
             int id = cardIds[i];
-            card.Init(id);
+
+            Texture face = (id >= 0 && id < cardTheme.faceSprites.Length)
+            ? cardTheme.faceSprites[id]
+            : null; // fallback if missing
+            card.Init(id, face);
 
             _cards.Add(card);
         }

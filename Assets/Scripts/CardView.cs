@@ -2,6 +2,7 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.UI;
 
 public class CardView : MonoBehaviour
 {
@@ -37,7 +38,13 @@ public class CardView : MonoBehaviour
     [Tooltip("Invoked when the card finishes flipping face-up.")]
     public CardFlipEvent OnCardFlippedUp;
 
+    [SerializeField] private Material frontMaterial;
+    [SerializeField] private Image frontImage;
 
+    private void Awake()
+    {
+        frontImage.material = new Material(frontMaterial);
+    }
 
     private Tween flipTween;
     private bool inPreviewMode = false;
@@ -62,11 +69,12 @@ public class CardView : MonoBehaviour
     /// <summary>
     /// Called by BoardManager after instantiation to assign the logical ID.
     /// </summary>
-    public void Init(int id)
+    public void Init(int id, Texture faceSprite)
     {
         cardId = id;
         debugIdText.text = id.ToString();
         IsMatched = false;
+        frontImage.material.SetTexture("_BaseMap", faceSprite);
         SetToFaceDownImmediate();
     }
 
@@ -157,7 +165,9 @@ public class CardView : MonoBehaviour
         SetToFaceUpImmediate();
 
         // Feedback punch effect when card is matched.
-        cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity);
+        cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity).OnComplete(() => {
+            cardContainer.gameObject.SetActive(false);
+        });
     }
 
     public void SetToFaceDownImmediate()
