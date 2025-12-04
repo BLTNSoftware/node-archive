@@ -17,4 +17,9 @@ public class UIManager : MonoBehaviour
     {
         gameOverScreen.SetActive(true);
     }
+
+    public void HideGameOverScreen()
+    {
+        gameOverScreen.SetActive(false);
+    }
 }

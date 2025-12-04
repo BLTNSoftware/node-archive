@@ -52,7 +52,7 @@ public class CardSelectionController : MonoBehaviour
 
     public void SubscribeToCards()
     {
-        UnsubscribeFromCards(); // safety
+        //UnsubscribeFromCards(); // safety
 
         for (int i = 0; i < boardManager.Cards.Count; i++)
         {
@@ -62,7 +62,7 @@ public class CardSelectionController : MonoBehaviour
         }
     }
 
-    private void UnsubscribeFromCards()
+    public void UnsubscribeFromCards()
     {
 
         for(int i = 0; i < _pendingCards.Count; i++)
@@ -75,13 +75,37 @@ public class CardSelectionController : MonoBehaviour
         _pendingCards.Clear();
         _inComparison.Clear();
     }
+    public void InitializePendingFromBoardState()
+    {
+        _pendingCards.Clear();
+        _inComparison.Clear();
+
+        if (boardManager == null || boardManager.Cards == null)
+            return;
+
+        foreach (var card in boardManager.Cards)
+        {
+            if (card == null)
+                continue;
+
+            // We care about cards that are face-up but not yet matched
+            if (card.IsFaceUp && !card.IsMatched)
+            {
+                _pendingCards.Add(card);
+            }
+        }
+
+        // If there are already 2+ face-up cards when we load,
+        // this will schedule comparisons as usual.
+        StartNextComparison();
+    }
+
 
     /// <summary>
     /// Called by CardView when its flip up animation is complete, and the card is now face up.
     /// </summary>
     private void HandleCardFlippedUp(CardView card)
     {
-        Debug.Log($"CardSelectionController: Card flipped up: ID={card.CardId}");
         if (card == null)
             return;
 
@@ -94,6 +118,7 @@ public class CardSelectionController : MonoBehaviour
         if (_pendingCards.Contains(card))
             return;
 
+        Debug.Log($"CardSelectionController: Card flipped up: ID={card.CardId}");
         _pendingCards.Add(card);
         StartNextComparison();
     }

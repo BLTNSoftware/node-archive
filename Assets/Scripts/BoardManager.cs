@@ -32,10 +32,10 @@ public class BoardManager : MonoBehaviour
 
     private void Start()
     {
-        if (currentConfig != null)
-            GenerateBoard(currentConfig);
-        else
-            Debug.LogWarning($"{gameObject.name}: No BoardConfig assigned.");
+        //if (currentConfig != null)
+        //    GenerateBoard(currentConfig);
+        //else
+        //    Debug.LogWarning($"{gameObject.name}: No BoardConfig assigned.");
     }
 
     /// <summary>
@@ -55,6 +55,51 @@ public class BoardManager : MonoBehaviour
         ClearBoard();
         ConfigureGrid(config.rows, config.columns);
         CreateCards(config.rows, config.columns);
+    }
+
+    public void GenerateBoard(BoardConfig config, GameSaveData saveData = null)
+    {
+        currentConfig = config;
+
+        ClearBoard();
+        ConfigureGrid(config.rows, config.columns);
+
+        if (saveData != null && saveData.cards != null && saveData.cards.Length > 0)
+        {
+            CreateCardsFromSave(saveData);
+        }
+        else
+        {
+            CreateCards(config.rows, config.columns);
+        }
+    }
+
+    private void CreateCardsFromSave(GameSaveData saveData)
+    {
+
+        int usableCards = saveData.cards.Length;
+
+        for (int i = 0; i < usableCards; i++)
+        {
+            var cardInfo = saveData.cards[i];
+
+            CardView card = Instantiate(cardPrefab, gridLayoutGroup.transform);
+            card.transform.localScale = Vector3.one;
+
+            card.Init(cardInfo.cardId);
+
+            if (cardInfo.isMatched)
+            {
+                card.SetMatched();
+            }
+            else if (cardInfo.isFaceUp)
+            {
+                card.SetToFaceUpImmediate();
+            }
+            // else stays face down by Init()
+
+            _cards.Add(card);
+        }
     }
 
     /// <summary>

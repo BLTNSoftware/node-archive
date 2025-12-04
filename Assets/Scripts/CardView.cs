@@ -49,9 +49,9 @@ public class CardView : MonoBehaviour
     private void Start()
     {
         // Ensure we start face-down in case Init wasn't called yet
-        SetToFaceDownImmediate();
-        IsMatched = false;
-        IsAnimating = false;
+        //SetToFaceDownImmediate();
+        //IsMatched = false;
+        //IsAnimating = false;
     }
 
     /// <summary>
@@ -80,13 +80,20 @@ public class CardView : MonoBehaviour
         
     }
 
-    public void FlipUp(bool callback = true)
+    public void FlipUp(bool previewOnly = false)
     {
-        if (IsAnimating || IsMatched || IsFaceUp)
-            return;
+        if ( !previewOnly)
+        {
+            if (IsAnimating || IsMatched || IsFaceUp)
+                return;
+        }
+        
 
         IsAnimating = true;
-        IsFaceUp = true;
+        if (!previewOnly)
+        {
+            IsFaceUp = true;
+        }
         flipTween?.Kill();
 
         flipTween = cardContainer
@@ -95,7 +102,7 @@ public class CardView : MonoBehaviour
             .OnComplete(() =>
             {
                 IsAnimating = false;
-                if (callback)
+                if (!previewOnly)
                 {
                     OnCardFlippedUp?.Invoke(this);
                 }
@@ -103,13 +110,21 @@ public class CardView : MonoBehaviour
             });
     }
 
-    public void FlipDown()
+    public void FlipDown(bool previewOnly = false)
     {
-        if (IsAnimating || !IsFaceUp)
-            return;
+        if (!previewOnly)
+        {
+            if (IsAnimating || !IsFaceUp)
+                return;
+        }
+        //if (IsAnimating || !IsFaceUp)
+        //    return;
 
         IsAnimating = true;
-        IsFaceUp = false;
+        //if (!previewOnly)
+        {
+            IsFaceUp = false;
+        }
         flipTween?.Kill();
 
         flipTween = cardContainer
@@ -125,6 +140,7 @@ public class CardView : MonoBehaviour
     {
         IsMatched = true;
         IsFaceUp = true;
+        SetToFaceUpImmediate();
 
         // Feedback punch effect when card is matched.
         cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity);
@@ -135,9 +151,12 @@ public class CardView : MonoBehaviour
         IsFaceUp = false;
         cardContainer.localRotation = Quaternion.Euler(0f, FaceDownY, 0f);
     }
-    public void SetToFaceUpImmediate()
+    public void SetToFaceUpImmediate(bool setFlag = true)
     {
-        IsFaceUp = true;
-        cardContainer.localRotation = Quaternion.Euler(0f, FaceUpY, 0f);
+        if (setFlag)
+        {
+            IsFaceUp = true;
+        }
+        cardContainer.localRotation = Quaternion.Euler(0f, FaceUpY, 0f); 
     }
 }
