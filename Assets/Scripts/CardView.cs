@@ -1,107 +1,135 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using DG.Tweening;
+using UnityEngine.Events;
+using TMPro;
 
 public class CardView : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private RectTransform cardContainer;
 
-    [SerializeField] RectTransform cardContainer;
+    [Header("Flip settings")]
+    [SerializeField] private float flipUpTime = 0.2f;
+    [SerializeField] private float flipDownTime = 0.3f;
 
-    [SerializeField] float flipUpTime = 0.2f;
-    [SerializeField] float flipDownTime = 0.3f;
-    [SerializeField] float punchScaleTime = 0.2f;
-    [SerializeField] float punchScaleSizeFactor = 0.15f;
-    [SerializeField] int punchVibrato = 5;
-    [SerializeField] float punchElasticity = 0.6f;
+    // Tiny offsets on Y to force a consistent rotation direction
+    private const float FaceDownY = 0.001f;
+    private const float FaceUpY = -179.99f;
 
-    public int CardId = 0;
+    [Header("Feedback effect params")]
+    [SerializeField] private float punchScaleTime = 0.2f;
+    [SerializeField] private float punchScaleSizeFactor = 0.15f;
+    [SerializeField] private int punchVibrato = 5;
+    [SerializeField] private float punchElasticity = 0.6f;
+
+    [Header("State (Debug)")]
+    [SerializeField] private int cardId = 0;
+    [SerializeField] private TextMeshProUGUI debugIdText;
+    public int CardId => cardId;
+
     public bool IsAnimating { get; private set; }
+    public bool IsMatched { get; private set; }
+    public bool IsFaceUp { get; private set; }
 
-    public bool IsMatched = false;
+    [System.Serializable]
+    public class CardFlipEvent : UnityEvent<CardView> { }
 
+    [Tooltip("Invoked when the card finishes flipping face-up.")]
+    public CardFlipEvent OnCardFlippedUp;
 
-    public bool IsFaceUp = false;
+    private Tween flipTween;
 
-    Tween flipTween;
+    //private void Reset()
+    //{
+    //    // Auto-assign if dropped on the prefab
+    //    if (cardContainer == null)
+    //        cardContainer = GetComponent<RectTransform>();
+    //}
 
     private void Start()
     {
-        Init(CardId);
+        // Ensure we start face-down in case Init wasn't called yet
+        SetToFaceDownImmediate();
+        IsMatched = false;
+        IsAnimating = false;
     }
 
+    /// <summary>
+    /// Called by BoardManager after instantiation to assign the logical ID.
+    /// </summary>
     public void Init(int id)
     {
-        CardId = id;
-        ShowBackImmediate();
+        cardId = id;
+        debugIdText.text = id.ToString();
+        IsMatched = false;
+        SetToFaceDownImmediate();
     }
 
+    /// <summary>
+    /// Called from the UI Button on the card.
+    /// Only allows flipping UP, logic decides when to flip down.
+    /// </summary>
     public void OnClicked()
     {
-        if (IsFaceUp)
-        {
-            FlipDown();
+        if (IsAnimating || IsMatched)
+            return;
 
-        }
-        else
-        {
-
+        // If already face up, ignore.
+        if (!IsFaceUp)
             FlipUp();
-        }
+        
     }
-
- 
 
     public void FlipUp()
     {
+        if (IsAnimating || IsMatched || IsFaceUp)
+            return;
+
         IsAnimating = true;
         IsFaceUp = true;
         flipTween?.Kill();
 
         flipTween = cardContainer
-            .DORotate(new Vector3(0, -179.99f, 0), flipUpTime)// forcing a tiny offset to avoid gimbal lock and ensure correct rotation direction
+            .DORotate(new Vector3(0f, FaceUpY, 0f), flipUpTime)
+            .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
                 IsAnimating = false;
-
+                OnCardFlippedUp?.Invoke(this);
+                //Debug.Log($"Card {cardId} flipped up.");
             });
-
-
-
     }
 
     public void FlipDown()
     {
-        IsFaceUp = false;
+        if (IsAnimating || !IsFaceUp)
+            return;
+
         IsAnimating = true;
+        IsFaceUp = false;
         flipTween?.Kill();
 
         flipTween = cardContainer
-            .DORotate(new Vector3(0, 0.001f, 0), flipDownTime)// forcing a tiny offset to avoid gimbal lock and ensure correct rotation direction
+            .DORotate(new Vector3(0f, FaceDownY, 0f), flipDownTime)
+            .SetEase(Ease.Linear)
             .OnComplete(() =>
             {
                 IsAnimating = false;
-
             });
-
     }
 
     public void SetMatched()
     {
         IsMatched = true;
+        IsFaceUp = true;
 
+        // Feedback punch effect when card is matched.
         cardContainer.DOPunchScale(Vector3.one * punchScaleSizeFactor, punchScaleTime, punchVibrato, punchElasticity);
     }
 
-    void ShowFrontImmediate()
-    {
-
-        IsFaceUp = true;
-        cardContainer.localRotation = Quaternion.Euler(0, -179.99f, 0);
-    }
-
-    void ShowBackImmediate()
+    private void SetToFaceDownImmediate()
     {
         IsFaceUp = false;
-        cardContainer.localRotation = Quaternion.Euler(0, 0.001f, 0);
+        cardContainer.localRotation = Quaternion.Euler(0f, FaceDownY, 0f);
     }
 }

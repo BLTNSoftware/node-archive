@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.PlayerSettings;
 
 public class BoardManager : MonoBehaviour
 {
-    
+
+    public static BoardManager Instance { get; private set; }
+
     [SerializeField] private BoardConfig currentConfig;
 
     
@@ -26,8 +27,7 @@ public class BoardManager : MonoBehaviour
 
     private void Awake()
     {
-        if (gridLayoutGroup == null)
-            gridLayoutGroup = GetComponentInChildren<GridLayoutGroup>();
+        Instance = this;       
     }
 
     private void Start()
@@ -35,7 +35,7 @@ public class BoardManager : MonoBehaviour
         if (currentConfig != null)
             GenerateBoard(currentConfig);
         else
-            Debug.LogWarning(gameObject.name + ": No BoardConfig assigned.");
+            Debug.LogWarning($"{gameObject.name}: No BoardConfig assigned.");
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class BoardManager : MonoBehaviour
     {
         if (config == null)
         {
-            Debug.LogError(gameObject.name + ": Cannot generate board; config is null.");
+            Debug.LogError($"{gameObject.name}: Cannot generate board; config is null.");
             return;
         }
 
@@ -128,7 +128,7 @@ public class BoardManager : MonoBehaviour
     {
         if (cardPrefab == null)
         {
-            Debug.LogError(gameObject + ": Card prefab is not assigned.");
+            Debug.LogError($"{gameObject.name}: Card prefab is not assigned.");
             return;
         }
 
