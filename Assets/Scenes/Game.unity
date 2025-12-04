@@ -283,8 +283,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 236609093}
+  - component: {fileID: 236609094}
   m_Layer: 0
-  m_Name: BoardController
+  m_Name: BoardManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -305,6 +306,27 @@ Transform:
   m_Father: {fileID: 1357419261}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &236609094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236609092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 188510baa8b398f4fa0bf51cd2565e68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentConfig: {fileID: 11400000, guid: 412c5079535cfad44af87870f714bb03, type: 2}
+  gridLayoutGroup: {fileID: 8806622017400410057}
+  cardPrefab: {fileID: 8011268356141490528, guid: ae180d19461789a4c99d37be72aaee0c, type: 3}
+  spacing: {x: 10, y: 10}
+  padding:
+    m_Left: 20
+    m_Right: 20
+    m_Top: 20
+    m_Bottom: 20
 --- !u!1 &248114483
 GameObject:
   m_ObjectHideFlags: 0
@@ -1044,7 +1066,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7002222752999995206}
   - component: {fileID: 8806622017400410057}
-  - component: {fileID: 8806622017400410056}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -1052,20 +1073,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &8806622017400410056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8806622017400410055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be0d873218d8d414fbbf92d366b86c0e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rows: 5
-  columns: 6
 --- !u!114 &8806622017400410057
 MonoBehaviour:
   m_ObjectHideFlags: 0

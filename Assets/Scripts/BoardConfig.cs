@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game/BoardConfig")]
+[CreateAssetMenu(fileName = "BoardConfig", menuName = "Game/BoardConfig")]
 public class BoardConfig : ScriptableObject
 {
     public int rows;
