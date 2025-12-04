@@ -37,7 +37,10 @@ public class CardView : MonoBehaviour
     [Tooltip("Invoked when the card finishes flipping face-up.")]
     public CardFlipEvent OnCardFlippedUp;
 
+
+
     private Tween flipTween;
+    private bool inPreviewMode = false;
 
     //private void Reset()
     //{
@@ -53,6 +56,8 @@ public class CardView : MonoBehaviour
         //IsMatched = false;
         //IsAnimating = false;
     }
+
+
 
     /// <summary>
     /// Called by BoardManager after instantiation to assign the logical ID.
@@ -71,18 +76,23 @@ public class CardView : MonoBehaviour
     /// </summary>
     public void OnClicked()
     {
-        if (IsAnimating || IsMatched)
+        if (IsAnimating || IsMatched || inPreviewMode)
             return;
 
         // If already face up, ignore.
         if (!IsFaceUp)
+        {
             FlipUp();
+
+            AudioManager.Instance.PlayFlip();
+        }
         
     }
 
-    public void FlipUp(bool previewOnly = false)
+    public void FlipUp(bool previewMode = false)
     {
-        if ( !previewOnly)
+        inPreviewMode = previewMode;
+        if (!previewMode)
         {
             if (IsAnimating || IsMatched || IsFaceUp)
                 return;
@@ -90,7 +100,7 @@ public class CardView : MonoBehaviour
         
 
         IsAnimating = true;
-        if (!previewOnly)
+        if (!previewMode)
         {
             IsFaceUp = true;
         }
@@ -102,7 +112,7 @@ public class CardView : MonoBehaviour
             .OnComplete(() =>
             {
                 IsAnimating = false;
-                if (!previewOnly)
+                if (!previewMode)
                 {
                     OnCardFlippedUp?.Invoke(this);
                 }
@@ -110,9 +120,9 @@ public class CardView : MonoBehaviour
             });
     }
 
-    public void FlipDown(bool previewOnly = false)
+    public void FlipDown(bool previewMode = false)
     {
-        if (!previewOnly)
+        if (!previewMode)
         {
             if (IsAnimating || !IsFaceUp)
                 return;
@@ -121,10 +131,11 @@ public class CardView : MonoBehaviour
         //    return;
 
         IsAnimating = true;
-        //if (!previewOnly)
+        if (!previewMode)
         {
-            IsFaceUp = false;
+            //AudioManager.Instance.PlayFlip();
         }
+        IsFaceUp = false;
         flipTween?.Kill();
 
         flipTween = cardContainer
@@ -134,6 +145,9 @@ public class CardView : MonoBehaviour
             {
                 IsAnimating = false;
             });
+
+
+        inPreviewMode = false;
     }
 
     public void SetMatched()
@@ -149,6 +163,8 @@ public class CardView : MonoBehaviour
     public void SetToFaceDownImmediate()
     {
         IsFaceUp = false;
+
+        inPreviewMode = false;
         cardContainer.localRotation = Quaternion.Euler(0f, FaceDownY, 0f);
     }
     public void SetToFaceUpImmediate(bool setFlag = true)

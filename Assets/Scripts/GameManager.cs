@@ -71,10 +71,12 @@ public class GameManager : MonoBehaviour
         if (isMatch)
         {
             ScoreSystem.Instance.OnMatch();
+            AudioManager.Instance.PlayMatch();
         }
         else
         {
             ScoreSystem.Instance.OnMismatch();
+            AudioManager.Instance.PlayMismatch();
         }
 
         SaveGame();
@@ -228,6 +230,7 @@ public class GameManager : MonoBehaviour
     private void HandleAllPairsMatched()
     {
         UIManager.Instance.ShowGameOverScreen();
+        AudioManager.Instance.PlayGameOver();
     }
 
     internal void RestartGame()
